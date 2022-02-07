@@ -1,0 +1,19 @@
+2022-02-07T11:00:46.491 GBTKB [Database INFO] Connecting to: postgresql://dbname=stellar-genesis host=stellar-core-postgres user=postgres password=********
+2022-02-07T11:00:46.496 GBTKB [SCP INFO] LocalNode::LocalNode@self qSet: de3214
+2022-02-07T11:00:46.497 GBTKB [Database INFO] DB schema is in current version
+2022-02-07T11:00:46.502 GBTKB [default INFO] Connection effective settings:
+2022-02-07T11:00:46.502 GBTKB [default INFO] TARGET_PEER_CONNECTIONS: 8
+2022-02-07T11:00:46.502 GBTKB [default INFO] MAX_ADDITIONAL_PEER_CONNECTIONS: 64
+2022-02-07T11:00:46.502 GBTKB [default INFO] MAX_PENDING_CONNECTIONS: 500
+2022-02-07T11:00:46.502 GBTKB [default INFO] MAX_OUTBOUND_PENDING_CONNECTIONS: 56
+2022-02-07T11:00:46.502 GBTKB [default INFO] MAX_INBOUND_PENDING_CONNECTIONS: 444
+2022-02-07T11:00:46.502 GBTKB [History INFO] Probing history archive 'local' for existing state
+2022-02-07T11:00:46.506 GBTKB [History INFO] Downloading history archive state: .well-known/stellar-history.json
+2022-02-07T11:00:46.508 GBTKB [Process WARNING] process 21 exited 1: cp /mnt/stellar-hist/stellar-core-archive/node_001/.well-known/stellar-history.json buckets/tmp/history-7082fe6d9a1f8ac2/8f04639f251ca6ae-stellar-history.json
+2022-02-07T11:00:46.508 GBTKB [History ERROR] Could not download file: archive local maybe missing file .well-known/stellar-history.json
+2022-02-07T11:00:46.509 GBTKB [History ERROR] Could not download .well-known/stellar-history.json file: corrupt archive local
+2022-02-07T11:00:46.509 GBTKB [History INFO] History archive 'local' appears uninitialized
+2022-02-07T11:00:46.509 GBTKB [History INFO] Initializing history archive 'local'
+2022-02-07T11:00:46.517 GBTKB [History INFO] Initialized history archive 'local'
+2022-02-07T11:00:46.517 GBTKB [default INFO] Application destructing
+2022-02-07T11:00:46.517 GBTKB [default INFO] Application destroyed
