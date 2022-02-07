@@ -8,8 +8,9 @@ services:
   stellar-genesis:
     image: stellar/stellar-core:latest
     container_name: stellar-genesis
-    restart: on-failure
-    command: bash -c "new-db && new-hist local && run"
+    depends_on: 
+      - stellar-core-postgres
+    command: new-db
     environment:
       - TEST_VAR=test
     expose:
@@ -42,6 +43,8 @@ services:
       - stellar-testnet
   stellar-horizon:
     image: satoshipay/stellar-horizon:latest
+    depends_on: 
+      - stellar-core-postgres
     container_name: stellar-horizon
     restart: on-failure
     ports:

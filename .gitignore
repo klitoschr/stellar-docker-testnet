@@ -1,1 +1,3 @@
 docker-compose-testnet.yaml
+.stellar-genesis/buckets
+.stellar-genesis/stellar-core-*.txt
