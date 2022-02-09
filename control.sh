@@ -67,15 +67,6 @@ function generate_network_configs()
     
   echo "Run supportive services..."
   start_supportive_services
-  
-  #Prepare DBs for each validator and generate genesis history archive to be served from the history publisher
-  docker run --rm -v "$STELLAR_CONF:/etc/stellar/" stellar/stellar-core:latest new-db
-  docker run --rm -v "$STELLAR_CONF:/etc/stellar/" -v "$WORKING_DIR/deployment/history:/mnt/stellar-hist/stellar-core-archive/node_001/" stellar/stellar-core:latest new-hist local
-  
-  for (( i=0;i<${nvals};i++ ))
-	do	
-		docker run --rm -v "$WORKING_DIR/configs/validator-$i:/etc/stellar/" stellar/stellar-core:latest new-db
-	done
 
 }
 
