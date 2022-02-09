@@ -3,12 +3,11 @@
 VAL_NAME_PREFIX_DEFAULT="validator-"
 OUTPUT_DIR_DEFAULT="./validators-config/"
 
-IPS_FILENAME="ips_fixed.lst"
 VALIDATORS_MAP_FILENAME="validators-map.json"
 
 WORKING_DIR=${WORKING_DIR:-$(realpath ./)}
 TEMPLATES_DIR=${TEMPLATES_DIR:-$(realpath ./templates/)}
-COMPOSE_FILENAME=${COMPOSE_FILENAME:-"docker-compose.yml"}
+SUPPORTIVE_COMPOSE_FILENAME=${COMPOSE_FILENAME:-"docker-supportive-compose.yml"}
 VAL_NAME_PREFIX=${VAL_NAME_PREFIX:-VAL_NAME_PREFIX_DEFAULT}
 OUTPUT_DIR=${OUTPUT_DIR:-${OUTPUT_DIR_DEFAULT}}
 
@@ -31,13 +30,95 @@ function dockercompose_testnet_generator ()
 
 	sed -e  "s#\${WORKING_DIR}#$WORKING_DIR#g" \
 		${TEMPLATES_DIR}/docker-compose-testnet-template.yml  > ${WORKING_DIR}/${COMPOSE_FILENAME}
-<<comment
+
+}
+
+function dockercompose_supportive_services_generator ()
+{
+	num_of_validators=$1
+	configfiles_root_path=$2
+
+	sed -e  "s#\${WORKING_DIR}#$WORKING_DIR#g" \
+		${TEMPLATES_DIR}/docker-compose-testnet-template.yml  > ${WORKING_DIR}/${COMPOSE_FILENAME}
+
+}
+
+function create_dirs()
+{
+	num_of_validators=$1
+	
 	for (( i=0;i<${num_of_validators};i++ ))
 	do
-		echo "$(validator_service $i)" >> ${WORKING_DIR}/${COMPOSE_FILENAME}
+		mkdir -p configs/validator-$i
 	done
-comment
+	echo "Directories created"
 }
 
 
+function generate_configs()
+{
+	num_of_validators=$1
+	for (( i=0;i<${num_of_validators};i++ ))
+	do
+		cp ./templates/stellar_template.cfg configs/validator-$i/stellar-core.cfg
+	done
+	echo "Config files generated"
+}
 
+
+function generate_key_pairs()
+{
+	num_of_validators=$1
+	
+	docker run --rm stellar/stellar-core:latest gen-seed > stellar-genesis/key_pair.txt
+	
+	for (( i=0;i<${num_of_validators};i++ ))
+	do
+		docker run --rm stellar/stellar-core:latest gen-seed > configs/validator-$i/key_pair.txt
+	done
+	echo "Key pairs generated"
+}
+
+function update_configs()
+{
+	num_of_validators=$1
+	
+	#Updating Genesis config file
+	first_line_genesis=$(head -n 1 ./stellar-genesis/key_pair.txt)
+	arrIN=(${first_line_genesis//:/ })
+	secret=${arrIN[2]}			
+	sed -i 's/^\(NODE_SEED=\).*/\1"'$secret' self"/' ./stellar-genesis/stellar-core.cfg
+	
+	#Updating stellar genesis known peers
+	known_peers=()
+	for (( i=0;i<${num_of_validators};i++ ))
+	do
+		known_peers+=("validator-$i:11635")	
+	done
+	
+	genesis_known_peers=$(jq -nc '$ARGS.positional' --args ${known_peers[*]})
+	sed -i 's/^\(KNOWN_PEERS=\).*/\1'${genesis_known_peers}'/' ./stellar-genesis/stellar-core.cfg
+	
+	#Updating Validators config file
+	for (( i=0;i<${num_of_validators};i++ ))
+	do
+		first_line=$(head -n 1 configs/validator-$i/key_pair.txt)
+		arrIN=(${first_line//:/ })
+		secret=${arrIN[2]}		
+		
+		sed -i 's/^\(NODE_SEED=\).*/\1"'$secret' self"/' ./configs/validator-$i/stellar-core.cfg
+		
+		#Updating validator's known peers
+		val_known_peers=("stellar-genesis:11625")
+		for (( k=0;k<${num_of_validators};k++ ))
+		do
+			if [ $i != $k ]; then
+				val_known_peers+=("validator-$k:11635")
+			fi
+		done
+		validator_known_peers=$(jq -nc '$ARGS.positional' --args ${val_known_peers[*]})
+		sed -i 's/^\(KNOWN_PEERS=\).*/\1'${validator_known_peers}'/' ./configs/validator-$i/stellar-core.cfg	
+		
+	done
+	echo "Config files updated"
+}

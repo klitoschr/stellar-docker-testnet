@@ -6,20 +6,20 @@ source $ENVFILE
 
 WORKING_DIR=${WORKING_DIR:-$(realpath $(dirname $0))}
 TEMPLATES_DIR=${TEMPLATES_DIR:-$(realpath $(dirname $0)/templates/)}
-COMPOSE_FILENAME=${COMPOSE_FILENAME:-"docker-compose-testnet.yaml"}
+COMPOSE_FILENAME=${COMPOSE_FILENAME:-"docker-supportive-compose.yaml"}
 OUTPUT_DIR=${OUTPUT_DIR:-$(realpath $(dirname $0)/configfiles)}
+STELLAR_CONF=$(realpath $(dirname $0)/stellar-genesis/)
 VAL_NAME_PREFIX=${VAL_NAME_PREFIX:-"stellar-validator-"}
 TESTNET_NAME=${TESTNET_NAME:-"stellar_private_testnet"}
 COMPOSE_FILE=${WORKING_DIR}/$COMPOSE_FILENAME
+
 
 IMAGE_TAG=${IMAGE_TAG:-"latest"}
 
 VAL_NUM=${1:-3}
 
-echo $TEMPLATES_DIR
 
-
-#source scripts/helper_functions.sh
+source scripts/helper_functions.sh
 
 ### Source scripts under scripts directory
 . $(dirname $0)/scripts/helper_functions.sh
@@ -50,38 +50,41 @@ function help()
 function generate_network_configs()
 {
   nvals=$1
+  echo "Creating directories for $nvals validators..."
+  create_dirs ${VAL_NUM}
   
-  echo "Generating network configuration for $nvals validators..."
-  dockercompose_testnet_generator ${VAL_NUM} ${OUTPUT_DIR}
-<<comment
-  container_name='influxdb'
-  IS_RUNNING=$(docker ps --format '{{.Names}}' | grep "^${container_name}\$")
+  echo "Generating key pairs for the validators..."
+  generate_key_pairs ${VAL_NUM}
   
-  if [ "$IS_RUNNING" ]; then
-    # create monitoring database
-    dbcmd="docker exec -it influxdb influx -execute 'CREATE DATABASE \"${INFLUX_DB_NAME}\"'"
-    eval $dbcmd
-    echo "done!"
-  else
-    echo 'Monitoring is not running, DB is not generated'
-  fi
-comment
+  echo "Generating config files for $nvals validators..."
+  generate_configs ${VAL_NUM}
+  
+  echo "Updating config files with the generated key pairs..."
+  update_configs ${VAL_NUM}
+  
+  echo "Generating docker compose for supportive services (stellar-horizon, nginx history publisher, prometheus exporter, postgres instance..."
+  dockercompose_supportive_services_generator ${VAL_NUM} ${OUTPUT_DIR}
+  
+  
+  docker run --rm -v "$STELLAR_CONF:/etc/stellar/" stellar/stellar-core:latest new-db
+  
+  
+  echo "Run supportive services..."
+  start_supportive_services
+  
+
 }
 
-function start_network()
+function start_supportive_services()
 {
   nvals=$1
-  echo "Starting network with $nvals validators..."
-
-  #run testnet
-  echo "Starting the testnet..."
+  
+  #run supportive servives
+  echo "Starting supportive services..."
   TESTNET_NAME=${TESTNET_NAME} IMAGE_TAG=${IMAGE_TAG}\
     WORKING_DIR=$WORKING_DIR \
      docker-compose -f ${COMPOSE_FILE} --env-file $ENVFILE up --build -d
 
-  echo "Waiting for everything goes up..."
-
-  echo "Network is up and running"
 
 }
 
@@ -109,7 +112,7 @@ function do_cleanup()
 {
   echo "Cleaning up network configuration..."
   set -x
-  rm -rf ${OUTPUT_DIR}/*
+  rm -rf ${configs}/*
   rm ${COMPOSE_FILE}
   set +x
   echo "  clean up finished!"
