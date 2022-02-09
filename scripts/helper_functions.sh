@@ -96,7 +96,9 @@ function update_configs()
 		known_peers+=("validator-$i:11635")	
 	done
 	
-	genesis_known_peers=$(jq -nc '$ARGS.positional' --args ${known_peers[*]})
+	
+	
+	genesis_known_peers=$(jq -n -c -M --arg s "${known_peers[*]}" '($s|split(" "))')
 	sed -i 's/^\(KNOWN_PEERS=\).*/\1'${genesis_known_peers}'/' ./stellar-genesis/stellar-core.cfg
 	
 	#Updating Validators config file
@@ -116,7 +118,7 @@ function update_configs()
 				val_known_peers+=("validator-$k:11635")
 			fi
 		done
-		validator_known_peers=$(jq -nc '$ARGS.positional' --args ${val_known_peers[*]})
+		validator_known_peers=$(jq -n -c -M --arg s "${val_known_peers[*]}" '($s|split(" "))')
 		sed -i 's/^\(KNOWN_PEERS=\).*/\1'${validator_known_peers}'/' ./configs/validator-$i/stellar-core.cfg	
 		
 	done
