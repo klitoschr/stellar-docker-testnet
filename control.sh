@@ -71,7 +71,7 @@ function generate_network_configs()
   sleep 15
   
   echo "Configure validators DBs stellar-core new-db..."
-  prepare_dbs
+  prepare_dbs ${VAL_NUM}
 
 }
 

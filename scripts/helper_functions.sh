@@ -134,7 +134,7 @@ function prepare_dbs(){
 	docker run --rm --network=$TESTNET_NAME -v "$STELLAR_CONF:/etc/stellar/" -v "$WORKING_DIR/deployment/history:/mnt/stellar-hist/stellar-core-archive/node_001/" stellar/stellar-core:latest new-hist local
 	  
 	for (( i=0;i<${num_of_validators};i++ ))
-		do	
-			docker run --rm --network=$TESTNET_NAME -v "$WORKING_DIR/configs/validator-$i:/etc/stellar/" stellar/stellar-core:latest new-db
+	do	
+		docker run --rm --network=$TESTNET_NAME -v "$WORKING_DIR/configs/validator-$i:/etc/stellar/" stellar/stellar-core:latest new-db
 	done
 }
