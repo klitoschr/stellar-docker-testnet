@@ -67,6 +67,11 @@ function generate_network_configs()
     
   echo "Run supportive services..."
   start_supportive_services
+  
+  sleep 15
+  
+  echo "Configure validators DBs stellar-core new-db..."
+  prepare_dbs
 
 }
 
