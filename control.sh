@@ -68,7 +68,8 @@ function generate_network_configs()
   echo "Run supportive services..."
   start_supportive_services
   
-  sleep 15
+  echo "Waiting to create databases in postgres instance"
+  sleep 25
   
   echo "Configure validators DBs stellar-core new-db..."
   prepare_dbs ${VAL_NUM}

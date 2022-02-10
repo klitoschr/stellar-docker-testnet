@@ -10,7 +10,7 @@ services:
     container_name: stellar-core-postgres
     restart: on-failure
     environment:
-      - POSTGRES_MULTIPLE_DATABASES="stellar-genesis","stellar_horizon_db","validator-0","validator-1","validator-2","validator-3" 
+      - POSTGRES_MULTIPLE_DATABASES=databases_here 
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=unic_iff
       - PGDATA=/var/lib/postgresql/data/pgdata

@@ -37,9 +37,20 @@ function dockercompose_supportive_services_generator ()
 {
 	num_of_validators=$1
 	configfiles_root_path=$2
-
+	
 	sed -e  "s#\${WORKING_DIR}#$WORKING_DIR#g" \
 		${TEMPLATES_DIR}/docker-compose-testnet-template.yml  > ${WORKING_DIR}/${COMPOSE_FILENAME}
+		
+	#Update databases to be created in postgres insance
+	dbs=("stellar-genesis" "stellar_horizon_db")
+	for (( i=0;i<${num_of_validators};i++ ))
+		do
+			dbs+=" validator-"$i
+		done
+	temp_string=$(jq -n -c -M --arg s "${dbs[*]}" '($s|split(" "))')
+	dbs=$(echo $temp_string | sed 's/[][]//g')
+	
+	sed -i 's/databases_here/'$dbs'/g' ./docker-supportive-compose.yaml
 
 }
 
