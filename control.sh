@@ -111,6 +111,9 @@ function stop_network()
 {
   echo "Stopping network..."
   
+  docker container stop stellar-genesis
+  docker container rm stellar-genesis
+  
   CONFIGFILES=${OUTPUT_DIR} IMAGE_TAG=${IMAGE_TAG} \
         WORKING_DIR=$WORKING_DIR \
       docker-compose -f ${COMPOSE_FILE} --env-file $ENVFILE down
@@ -135,8 +138,13 @@ function do_cleanup()
 {
   echo "Cleaning up network configuration..."
   set -x
-  sudo rm -rf ${configs}/*
+  rm -rf ${configs}/*
+  rm -rf /stellar-genesis/buckets
+  rm -rf /stellar-genesis/core
+  rm -rf /stellar-genesis/stellar-core-* 
+  rm -rf /deployment
   rm ${COMPOSE_FILE}
+  rm ${NETWORK_COMPOSE_FILE}
   set +x
   echo "  clean up finished!"
 }
