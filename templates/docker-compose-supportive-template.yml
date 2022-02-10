@@ -22,23 +22,6 @@ services:
       - ./scripts:/docker-entrypoint-initdb.d
     networks:
       - stellar-testnet
-  stellar-horizon:
-    image: satoshipay/stellar-horizon:latest
-    depends_on: 
-      - stellar-core-postgres
-    container_name: stellar-horizon
-    restart: on-failure
-    ports:
-    - 8000:8000
-    environment:
-      - DATABASE_URL=postgres://postgres:unic_iff@stellar-core-postgres/stellar_horizon_db?sslmode=disable
-      - STELLAR_CORE_DATABASE_URL=postgres://postgres:unic_iff@stellar-core-postgres/stellar-genesis?sslmode=disable
-      - STELLAR_CORE_URL=http://stellar-genesis:11626
-      - HISTORY_ARCHIVE_URLS=http://stellar-archive-publisher:80
-      - NETWORK_PASSPHRASE=Standalone UNIC_IFF Network ; 2022          
-      - INGEST=true
-    networks:
-      - stellar-testnet
   nginx:
     image: nginx
     container_name: stellar-archive-publisher

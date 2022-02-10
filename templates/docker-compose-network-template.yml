@@ -5,18 +5,20 @@ networks:
     name: ${TESTNET_NAME:-stellar_testnet}
 
 services:
-  stellar-genesis:
-    image: stellar/stellar-core:latest
-    container_name: stellar-genesis
-    command: run
-    expose:
-      - 11625
-      - 11626
+  stellar-horizon:
+    image: satoshipay/stellar-horizon:latest
+    depends_on: 
+      - stellar-genesis
+    container_name: stellar-horizon
+    restart: on-failure
     ports:
-      - 11625:11625
-      - 11626:11626
-    volumes:
-      - ./stellar-genesis:/etc/stellar/ 
-      - ./deployment/history:/mnt/stellar-hist/stellar-core-archive/node_001/"
+    - 8000:8000
+    environment:
+      - DATABASE_URL=postgres://postgres:unic_iff@stellar-core-postgres/stellar_horizon_db?sslmode=disable
+      - STELLAR_CORE_DATABASE_URL=postgres://postgres:unic_iff@stellar-core-postgres/stellar-genesis?sslmode=disable
+      - STELLAR_CORE_URL=http://stellar-genesis:11626
+      - HISTORY_ARCHIVE_URLS=http://stellar-archive-publisher:80
+      - NETWORK_PASSPHRASE=Standalone UNIC_IFF Network ; 2022          
+      - INGEST=true
     networks:
       - stellar-testnet
