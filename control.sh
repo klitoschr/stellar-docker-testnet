@@ -12,7 +12,7 @@ STELLAR_CONF=$(realpath $(dirname $0)/stellar-genesis/)
 VAL_NAME_PREFIX=${VAL_NAME_PREFIX:-"stellar-validator-"}
 TESTNET_NAME=${TESTNET_NAME:-"stellar_private_testnet"}
 COMPOSE_FILE=${WORKING_DIR}/$COMPOSE_FILENAME
-NETWORK_COMPOSE_FILE=${WORKING_DIR}/docker-compose-testnet.yml
+NETWORK_COMPOSE_FILE=${WORKING_DIR}/docker-testnet-compose.yml
 IMAGE_TAG=${IMAGE_TAG:-"latest"}
 VAL_NUM=${1:-3}
 
