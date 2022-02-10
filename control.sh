@@ -114,6 +114,10 @@ function stop_network()
   CONFIGFILES=${OUTPUT_DIR} IMAGE_TAG=${IMAGE_TAG} \
         WORKING_DIR=$WORKING_DIR \
       docker-compose -f ${COMPOSE_FILE} --env-file $ENVFILE down
+	  
+  CONFIGFILES=${OUTPUT_DIR} IMAGE_TAG=${IMAGE_TAG} \
+        WORKING_DIR=$WORKING_DIR \
+      docker-compose -f ${NETWORK_COMPOSE_FILE} --env-file $ENVFILE down
   
   echo "Network stopped!"
 }
