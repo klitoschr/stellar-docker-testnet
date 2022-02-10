@@ -1,22 +1,14 @@
-  ripple_validator_${VALNUM}:
-    image: uniciff/rippled-runner:${IMAGE_TAG}
+  stellar-validator${VALNUM}:
+    image: stellar/stellar-core:latest
     container_name: ${VAL_NAME_PREFIX}${VALNUM}
-    hostname: ${VAL_NAME_PREFIX}${VALNUM}
     volumes:
-      - ${CONFIGFILES}/${VAL_NAME_PREFIX}${VALNUM}:/etc/opt/ripple
-      - ./exporters:/rippled/exporters
-      - ${CONFIGFILES}/${VAL_NAME_PREFIX}${VALNUM}/inetd.conf:/etc/inetd.conf
+      - ${CONFIGFILES}/${VAL_NAME_PREFIX}${VALNUM}:/etc/stellar/ 
     networks:
-      - ripple-testnet
-    entrypoint: "/entrypoint.sh"
-    command: "./rippled"
+      - stellar-testnet
+    command: run
     ports:
-      - ${PEER_PORT}
-      - 6006
-      - 5005
-      - 5006
+      - 11635
+      - 11636
     expose:
-      - ${PEER_PORT}
-      - 6006
-      - 5005
-      - 5006
+      - 11635
+      - 11636

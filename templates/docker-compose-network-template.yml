@@ -1,0 +1,22 @@
+version: "3.5"
+
+networks:
+  stellar-testnet:
+    name: ${TESTNET_NAME:-stellar_testnet}
+
+services:
+  stellar-genesis:
+    image: stellar/stellar-core:latest
+    container_name: stellar-genesis
+    command: run
+    expose:
+      - 11625
+      - 11626
+    ports:
+      - 11625:11625
+      - 11626:11626
+    volumes:
+      - ./stellar-genesis:/etc/stellar/ 
+      - ./deployment/history:/mnt/stellar-hist/stellar-core-archive/node_001/"
+    networks:
+      - stellar-testnet

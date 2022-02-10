@@ -1,45 +1,49 @@
 #!/bin/bash
 
 VAL_NAME_PREFIX_DEFAULT="validator-"
-OUTPUT_DIR_DEFAULT="./validators-config/"
-
-VALIDATORS_MAP_FILENAME="validators-map.json"
 
 WORKING_DIR=${WORKING_DIR:-$(realpath ./)}
 TEMPLATES_DIR=${TEMPLATES_DIR:-$(realpath ./templates/)}
 SUPPORTIVE_COMPOSE_FILENAME=${COMPOSE_FILENAME:-"docker-supportive-compose.yml"}
+NETWORK_COMPOSE_FILENAME=${NETWORK_COMPOSE_FILENAME:-"docker-testnet-compose.yml"}
 VAL_NAME_PREFIX=${VAL_NAME_PREFIX:-VAL_NAME_PREFIX_DEFAULT}
-OUTPUT_DIR=${OUTPUT_DIR:-${OUTPUT_DIR_DEFAULT}}
+OUTPUT_DIR=${OUTPUT_DIR:-$(realpath $(dirname $0)/configs)}
+
 
 function validator_service()
 {
 	valnum=$1
-        val_deploy_path=${OUTPUT_DIR}/${VAL_NAME_PREFIX}${valnum}
+    val_deploy_path=${OUTPUT_DIR}
+	
 	sed -e "s/\${VAL_ID}/$valnum/g" \
             -e "s/\${VAL_NAME_PREFIX}/${VAL_NAME_PREFIX}/g" \
-            -e "s#\${LOCAL_BESU_DEPLOY_PATH}#$val_deploy_path#g" \
-            -e "s#\${WORKING_DIR}#$WORKING_DIR#g" \
+			-e "s#\${CONFIGFILES}#$val_deploy_path#g" \
+            -e "s#\${VALNUM}#$valnum#g" \
 		${TEMPLATES_DIR}/validator-template.yml | sed -e $'s/\\\\n/\\\n    /g'
 
 }
 
+
 function dockercompose_testnet_generator ()
 {
 	num_of_validators=$1
-	configfiles_root_path=$2
 
 	sed -e  "s#\${WORKING_DIR}#$WORKING_DIR#g" \
-		${TEMPLATES_DIR}/docker-compose-testnet-template.yml  > ${WORKING_DIR}/${COMPOSE_FILENAME}
+		${TEMPLATES_DIR}/docker-compose-network-template.yml  > ${WORKING_DIR}/${NETWORK_COMPOSE_FILENAME}
+		
+	for (( i=0;i<${num_of_validators};i++ ))
+	do
+		echo "$(validator_service $i)" >> ${WORKING_DIR}/${NETWORK_COMPOSE_FILENAME}
+	done
 
 }
 
 function dockercompose_supportive_services_generator ()
 {
 	num_of_validators=$1
-	configfiles_root_path=$2
 	
 	sed -e  "s#\${WORKING_DIR}#$WORKING_DIR#g" \
-		${TEMPLATES_DIR}/docker-compose-testnet-template.yml  > ${WORKING_DIR}/${COMPOSE_FILENAME}
+		${TEMPLATES_DIR}/docker-compose-supportive-template.yml  > ${WORKING_DIR}/${COMPOSE_FILENAME}
 		
 	#Update databases to be created in postgres insance
 	dbs=("stellar-genesis" "stellar_horizon_db")
@@ -47,6 +51,7 @@ function dockercompose_supportive_services_generator ()
 		do
 			dbs+=" validator-"$i
 		done
+		
 	temp_string=$(jq -n -c -M --arg s "${dbs[*]}" '($s|split(" "))')
 	dbs=$(echo $temp_string | sed 's/[][]//g')
 	

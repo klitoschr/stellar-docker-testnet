@@ -1,0 +1,92 @@
+version: "3.5"
+
+networks:
+  stellar-testnet:
+    name: ${TESTNET_NAME:-stellar_testnet}
+
+services:
+  stellar-genesis:
+    image: stellar/stellar-core:latest
+    container_name: stellar-genesis
+    command: run
+    expose:
+      - 11625
+      - 11626
+    ports:
+      - 11625:11625
+      - 11626:11626
+    volumes:
+      - ./stellar-genesis:/etc/stellar/ 
+      - ./deployment/history:/mnt/stellar-hist/stellar-core-archive/node_001/"
+    networks:
+      - stellar-testnet
+  stellar-validator0:
+    image: stellar/stellar-core:latest
+    container_name: validator-0
+    volumes:
+      - /c/Users/touloups.m/Desktop/stellar-docker-testnet/configs/validator-0:/etc/stellar/ 
+    networks:
+      - stellar-testnet
+    command: run
+    ports:
+      - 11635
+      - 11636
+    expose:
+      - 11635
+      - 11636
+  stellar-validator1:
+    image: stellar/stellar-core:latest
+    container_name: validator-1
+    volumes:
+      - /c/Users/touloups.m/Desktop/stellar-docker-testnet/configs/validator-1:/etc/stellar/ 
+    networks:
+      - stellar-testnet
+    command: run
+    ports:
+      - 11635
+      - 11636
+    expose:
+      - 11635
+      - 11636
+  stellar-validator2:
+    image: stellar/stellar-core:latest
+    container_name: validator-2
+    volumes:
+      - /c/Users/touloups.m/Desktop/stellar-docker-testnet/configs/validator-2:/etc/stellar/ 
+    networks:
+      - stellar-testnet
+    command: run
+    ports:
+      - 11635
+      - 11636
+    expose:
+      - 11635
+      - 11636
+  stellar-validator3:
+    image: stellar/stellar-core:latest
+    container_name: validator-3
+    volumes:
+      - /c/Users/touloups.m/Desktop/stellar-docker-testnet/configs/validator-3:/etc/stellar/ 
+    networks:
+      - stellar-testnet
+    command: run
+    ports:
+      - 11635
+      - 11636
+    expose:
+      - 11635
+      - 11636
+  stellar-validator4:
+    image: stellar/stellar-core:latest
+    container_name: validator-4
+    volumes:
+      - /c/Users/touloups.m/Desktop/stellar-docker-testnet/configs/validator-4:/etc/stellar/ 
+    networks:
+      - stellar-testnet
+    command: run
+    ports:
+      - 11635
+      - 11636
+    expose:
+      - 11635
+      - 11636

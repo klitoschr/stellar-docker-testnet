@@ -7,15 +7,13 @@ source $ENVFILE
 WORKING_DIR=${WORKING_DIR:-$(realpath $(dirname $0))}
 TEMPLATES_DIR=${TEMPLATES_DIR:-$(realpath $(dirname $0)/templates/)}
 COMPOSE_FILENAME=${COMPOSE_FILENAME:-"docker-supportive-compose.yaml"}
-OUTPUT_DIR=${OUTPUT_DIR:-$(realpath $(dirname $0)/configfiles)}
+OUTPUT_DIR=${OUTPUT_DIR:-$(realpath $(dirname $0)/configs)}
 STELLAR_CONF=$(realpath $(dirname $0)/stellar-genesis/)
 VAL_NAME_PREFIX=${VAL_NAME_PREFIX:-"stellar-validator-"}
 TESTNET_NAME=${TESTNET_NAME:-"stellar_private_testnet"}
 COMPOSE_FILE=${WORKING_DIR}/$COMPOSE_FILENAME
-
-
+NETWORK_COMPOSE_FILE=${WORKING_DIR}/docker-compose-testnet.yml
 IMAGE_TAG=${IMAGE_TAG:-"latest"}
-
 VAL_NUM=${1:-3}
 
 
@@ -50,6 +48,7 @@ function help()
 function generate_network_configs()
 {
   nvals=$1
+
   echo "Creating directories for $nvals validators..."
   create_dirs ${VAL_NUM}
   
@@ -74,6 +73,9 @@ function generate_network_configs()
   echo "Configure validators DBs stellar-core new-db..."
   prepare_dbs ${VAL_NUM}
 
+  echo "Generating docker compose for stellar-network validators"
+  dockercompose_testnet_generator ${VAL_NUM}
+
 }
 
 function start_supportive_services()
@@ -89,6 +91,22 @@ function start_supportive_services()
 
 }
 
+function start_network()
+{
+  nvals=$1
+  echo "Starting Stellar network with $nvals validators..."
+
+  #run testnet
+  TESTNET_NAME=${TESTNET_NAME} IMAGE_TAG=${IMAGE_TAG}\
+    WORKING_DIR=$WORKING_DIR \
+     docker-compose -f ${NETWORK_COMPOSE_FILE} --env-file $ENVFILE up --build -d
+
+  echo "Waiting for all validators to run..."
+
+  echo "Network is up and running"
+
+}
+
 function stop_network()
 {
   echo "Stopping network..."
@@ -97,7 +115,7 @@ function stop_network()
         WORKING_DIR=$WORKING_DIR \
       docker-compose -f ${COMPOSE_FILE} --env-file $ENVFILE down
   
-  echo "  stopped!"
+  echo "Network stopped!"
 }
 
 function print_status()
