@@ -68,7 +68,7 @@ function generate_network_configs()
   start_supportive_services
   
   echo "Waiting to create databases in postgres instance"
-  sleep 25
+  sleep 45
   
   echo "Configure validators DBs stellar-core new-db..."
   prepare_dbs ${VAL_NUM}
@@ -131,7 +131,7 @@ function do_cleanup()
 {
   echo "Cleaning up network configuration..."
   set -x
-  rm -rf ${configs}/*
+  sudo rm -rf ${configs}/*
   rm ${COMPOSE_FILE}
   set +x
   echo "  clean up finished!"
