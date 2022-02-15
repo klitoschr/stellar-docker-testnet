@@ -1,5 +1,5 @@
 # Private Stellar TestNet 
-<p align="center"><img src="https://assets.gadgets360cdn.com/img/crypto/stellar-og-logo.png" /></p>
+<p align="center"><img src="https://assets.gadgets360cdn.com/img/crypto/stellar-og-logo.png" width="500" height="300"/></p>
 
 This project is a set of scripts that generate all the required validators' key-pairs and configuration files to start a private Stellar network. Additionally, it generates a docker-compose file for the private Stellar Testnet that can be used to launch a testnet locally, or on a virutal private server.
 
