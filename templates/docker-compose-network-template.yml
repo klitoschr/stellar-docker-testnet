@@ -7,8 +7,6 @@ networks:
 services:
   stellar-horizon:
     image: satoshipay/stellar-horizon:latest
-    depends_on: 
-      - stellar-genesis
     container_name: stellar-horizon
     restart: on-failure
     ports:
