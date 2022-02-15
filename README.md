@@ -1,11 +1,11 @@
-
 # Private Stellar TestNet 
-
+![enter image description here](https://assets.gadgets360cdn.com/img/crypto/stellar-og-logo.png)
+This project is a set of scripts that generate all the required validators' key-pairs and configuration files to start a private Stellar network. Additionally, it generates a docker-compose file for the private Stellar Testnet that can be used to launch a testnet locally, or on a virutal private server.
 
 ## Requirements
-- Docker Engine should be installed and running.
+- Docker Engine
 - Docker Compose
-- jq , JSON Command line tool
+- JQ , JSON Command line tool
 - sed, File Streams Command line tool
 
 ## Testnet related operations
@@ -28,20 +28,37 @@ Actions:
   status
        Prints the status of the network
 ```
+### How to deploy a private Stellar network with n number of nodes/validators
+```
+./control.sh configure -n <number_of_validators>
+./control.sh start
+```
+
+### How to stop the network you have just deployed
+```
+./control.sh stop
+```
+
+### How to check the status of the network
+```
+./control.sh status
+```
+
+### How to clean your environment
+```
+./control.sh clean
+```
+
+### In case of permission problems for nginx serving the bucket of the network
+
+If you have not changed the volume that is used by stellar-genesis to store it's history then move to /deployment/history/buckets, dive into the next dirs to find the bucket.xvdf and execute the following (basically give read permissions to the file)
+```
+chmod +r <bucket_name.xvdf>
+```
+
 
 ## Contributors
 
-- Marios Touloupos ( @mtouloup ) - UBRI Fellow Researcher / PhD Candidate, University of Nicosia - Institute for the Future ( UNIC -IFF)
+- Marios Touloupos ( @mtouloup ) - PhD Candidate, University of Nicosia - Institute for the Future ( UNIC -IFF)
 
-# Research Team
-* Marios Touloupou (@mtouloup) [ touloupos.m@unic.ac.cy ]
-* Klitos Christodoulou [ christodoulou.kl@unic.ac.cy ]
-* Elias Iosif [ iosif.e@unic.ac.cy ]
 
-## Acknowledgements
-This work is funded by the Ripple’s Impact Fund, an advised fund of Silicon Valley Community Foundation (Grant id: 2018–188546).
-Link: [University Blockchain Research Initiative](https://ubri.ripple.com)
-
-## About IFF
-
-IFF is an interdisciplinary research centre, aimed at advancing emerging technologies, contributing to their effective application and evaluating their impact. The general mission at IFF is to educate leaders, develop knowledge and build communities to help society prepare for a future shaped by transformative technologies. The institution has been engaged with the community since 2013 offering the World’s First Massive Open Online Course (MOOC) on blockchain and cryptocurrency for free, supporting the community and bridging the educational gap on blockchains and digital currencies.
