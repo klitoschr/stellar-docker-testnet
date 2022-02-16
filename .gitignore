@@ -4,3 +4,4 @@ docker-compose-testnet.yaml
 /stellar-genesis/key_pair.txt
 /configs
 /deployment
+root_account.txt
