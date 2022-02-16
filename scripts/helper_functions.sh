@@ -119,7 +119,20 @@ function update_configs()
 	sed -i 's/^\(KNOWN_PEERS=\).*/\1'${genesis_known_peers}'/' ./stellar-genesis/stellar-core.cfg
 	
 	#Updating VALIDATORS field stellar-genesis
-	sed -i 's/^\(VALIDATORS=\).*/\1'${genesis_known_peers}'/' ./stellar-genesis/stellar-core.cfg
+	stellar_genesis_PK=$(sed -n '2p' ./stellar-genesis/key_pair.txt)
+	arrIN=(${stellar_genesis_PK//:/ })
+	public_key=${arrIN[1]}
+	validators=("$public_key")
+	
+	for (( i=0;i<${num_of_validators};i++ ))
+	do
+		second_line_genesis=$(sed -n '2p' ./configs/validator-$i/key_pair.txt)
+		arrIN=(${second_line_genesis//:/ })
+		public_key=${arrIN[1]}
+		validators+=("$public_key")
+	done
+	validator_correct_format=$(jq -n -c -M --arg s "${validators[*]}" '($s|split(" "))')
+	sed -i 's/^\(VALIDATORS=\).*/\1'${validator_correct_format}'/' ./stellar-genesis/stellar-core.cfg
 	
 	#Update database name in validator genesis config
 	sed -i 's/db_name/stellar-genesis/g' ./stellar-genesis/stellar-core.cfg
@@ -145,7 +158,7 @@ function update_configs()
 		sed -i 's/^\(KNOWN_PEERS=\).*/\1'${validator_known_peers}'/' ./configs/validator-$i/stellar-core.cfg
 		
 		#Updating VALIDATORS field for each validator config
-		sed -i 's/^\(VALIDATORS=\).*/\1'${validator_known_peers}'/' ./configs/validator-$i/stellar-core.cfg
+		sed -i 's/^\(VALIDATORS=\).*/\1'${validator_correct_format}'/' ./configs/validator-$i/stellar-core.cfg
 
 		#Update database name in validator config
 		sed -i 's/db_name/validator-'$i'/g' ./configs/validator-$i/stellar-core.cfg
