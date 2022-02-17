@@ -137,15 +137,13 @@ function print_status()
 function do_cleanup()
 {
   echo "Cleaning up network configuration..."
-  set -x
-  rm -rf ${configs}/*
+  rm -rf /configs
   rm -rf /stellar-genesis/buckets
   rm -rf /stellar-genesis/core
   rm -rf /stellar-genesis/stellar-core-* 
   rm -rf /deployment
   rm ${COMPOSE_FILE}
   rm ${NETWORK_COMPOSE_FILE}
-  set +x
   echo "  clean up finished!"
 }
 
