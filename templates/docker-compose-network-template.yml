@@ -6,7 +6,7 @@ networks:
 
 services:
   stellar-horizon:
-    image: satoshipay/stellar-horizon:latest
+    image: stellar/horizon:latest
     container_name: stellar-horizon
     restart: on-failure
     ports:
@@ -18,5 +18,7 @@ services:
       - HISTORY_ARCHIVE_URLS=http://stellar-archive-publisher:80
       - NETWORK_PASSPHRASE=Standalone UNIC_IFF Network ; 2022          
       - INGEST=true
+      - STELLAR_CORE_BINARY_PATH=/usr/bin/stellar-core
+      - ENABLE_CAPTIVE_CORE_INGESTION=false
     networks:
       - stellar-testnet
