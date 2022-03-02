@@ -63,3 +63,12 @@ chmod +r <bucket_name.xvdf>
 - Marios Touloupos ( @mtouloup ) - PhD Candidate, University of Nicosia - Institute for the Future ( UNIC -IFF)
 
 
+## Sponsors
+This work is partially funded by the Stellar Development Foundation (SDF): https://www.stellar.org/foundation
+
+
+## Feedback-Channel
+* GitLab issues
+
+
+
