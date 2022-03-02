@@ -68,7 +68,7 @@ This work is partially funded by the Stellar Development Foundation (SDF): https
 
 
 ## Feedback-Channel
-* GitLab issues
+* GitHub issues
 
 
 
