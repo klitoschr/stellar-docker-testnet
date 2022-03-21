@@ -76,6 +76,7 @@ function generate_network_configs()
   echo "Generating docker compose for stellar-network validators"
   dockercompose_testnet_generator ${VAL_NUM}
 
+
 }
 
 function start_supportive_services()
@@ -87,7 +88,9 @@ function start_supportive_services()
   TESTNET_NAME=${TESTNET_NAME} IMAGE_TAG=${IMAGE_TAG}\
     WORKING_DIR=$WORKING_DIR \
      docker-compose -f ${COMPOSE_FILE} --env-file $ENVFILE up --build -d
-
+   
+  # Migrating horizon db
+  docker run --rm -it --network benchmarking-fw-net stellar/horizon:latest db migrate up --db-url postgres://postgres:unic_iff@stellar-core-postgres/stellar_horizon_db?sslmode=disable
 
 }
 
@@ -137,11 +140,11 @@ function print_status()
 function do_cleanup()
 {
   echo "Cleaning up network configuration..."
-  rm -rf /configs
+  sudo rm -rf /configs
   rm -rf /stellar-genesis/buckets
   rm -rf /stellar-genesis/core
   rm -rf /stellar-genesis/stellar-core-* 
-  rm -rf /deployment
+  sudo rm -rf /deployment
   rm ${COMPOSE_FILE}
   rm ${NETWORK_COMPOSE_FILE}
   echo "  clean up finished!"
