@@ -15,7 +15,7 @@ services:
       - DATABASE_URL=postgres://postgres:unic_iff@stellar-core-postgres/stellar_horizon_db?sslmode=disable
       - STELLAR_CORE_DATABASE_URL=postgres://postgres:unic_iff@stellar-core-postgres/stellar-genesis?sslmode=disable
       - STELLAR_CORE_URL=http://stellar-genesis:11626
-      - HISTORY_ARCHIVE_URLS=http://stellar-archive-publisher:81
+      - HISTORY_ARCHIVE_URLS=http://stellar-archive-publisher:80
       - NETWORK_PASSPHRASE=Standalone UNIC_IFF Network ; 2022          
       - INGEST=true
       - STELLAR_CORE_BINARY_PATH=/usr/bin/stellar-core
