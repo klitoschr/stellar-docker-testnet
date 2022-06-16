@@ -49,7 +49,7 @@ function dockercompose_supportive_services_generator ()
 	dbs=("stellar-genesis" "stellar_horizon_db")
 	for (( i=0;i<${num_of_validators};i++ ))
 		do
-			dbs+=" validator-"$i
+			dbs+=" stellar-validator-"$i
 		done
 		
 	temp_string=$(jq -n -c -M --arg s "${dbs[*]}" '($s|split(" "))')
@@ -65,7 +65,7 @@ function create_dirs()
 	
 	for (( i=0;i<${num_of_validators};i++ ))
 	do
-		mkdir -p configs/validator-$i
+		mkdir -p configs/stellar-validator-$i
 	done
 	echo "Directories created"
 }
@@ -76,7 +76,7 @@ function generate_configs()
 	num_of_validators=$1
 	for (( i=0;i<${num_of_validators};i++ ))
 	do
-		cp ./templates/stellar_template.cfg configs/validator-$i/stellar-core.cfg
+		cp ./templates/stellar_template.cfg configs/stellar-validator-$i/stellar-core.cfg
 	done
 	echo "Config files generated"
 }
@@ -90,7 +90,7 @@ function generate_key_pairs()
 	
 	for (( i=0;i<${num_of_validators};i++ ))
 	do
-		docker run --rm stellar/stellar-core:latest gen-seed > configs/validator-$i/key_pair.txt
+		docker run --rm stellar/stellar-core:latest gen-seed > configs/stellar-validator-$i/key_pair.txt
 	done
 	echo "Key pairs generated"
 }
@@ -110,7 +110,7 @@ function update_configs()
 	
 	for (( i=0;i<${num_of_validators};i++ ))
 	do
-		known_peers+=("validator-$i:11635")
+		known_peers+=("stellar-validator-$i:11635")
 		
 	done
 	
@@ -126,7 +126,7 @@ function update_configs()
 	
 	for (( i=0;i<${num_of_validators};i++ ))
 	do
-		second_line_genesis=$(sed -n '2p' ./configs/validator-$i/key_pair.txt)
+		second_line_genesis=$(sed -n '2p' ./configs/stellar-validator-$i/key_pair.txt)
 		arrIN=(${second_line_genesis//:/ })
 		public_key=${arrIN[1]}
 		validators+=("$public_key")
@@ -140,28 +140,28 @@ function update_configs()
 	#Updating Validators config file
 	for (( i=0;i<${num_of_validators};i++ ))
 	do
-		first_line=$(head -n 1 configs/validator-$i/key_pair.txt)
+		first_line=$(head -n 1 configs/stellar-validator-$i/key_pair.txt)
 		arrIN=(${first_line//:/ })
 		secret=${arrIN[2]}		
 		
-		sed -i 's/^\(NODE_SEED=\).*/\1"'$secret' self"/' ./configs/validator-$i/stellar-core.cfg
+		sed -i 's/^\(NODE_SEED=\).*/\1"'$secret' self"/' ./configs/stellar-validator-$i/stellar-core.cfg
 		
 		#Updating validator's known peers
 		val_known_peers=("stellar-genesis:11625")
 		for (( k=0;k<${num_of_validators};k++ ))
 		do
 			if [ $i != $k ]; then
-				val_known_peers+=("validator-$k:11635")
+				val_known_peers+=("stellar-validator-$k:11635")
 			fi
 		done
 		validator_known_peers=$(jq -n -c -M --arg s "${val_known_peers[*]}" '($s|split(" "))')
-		sed -i 's/^\(KNOWN_PEERS=\).*/\1'${validator_known_peers}'/' ./configs/validator-$i/stellar-core.cfg
+		sed -i 's/^\(KNOWN_PEERS=\).*/\1'${validator_known_peers}'/' ./configs/stellar-validator-$i/stellar-core.cfg
 		
 		#Updating VALIDATORS field for each validator config
-		sed -i 's/^\(VALIDATORS=\).*/\1'${validator_correct_format}'/' ./configs/validator-$i/stellar-core.cfg
+		sed -i 's/^\(VALIDATORS=\).*/\1'${validator_correct_format}'/' ./configs/stellar-validator-$i/stellar-core.cfg
 
 		#Update database name in validator config
-		sed -i 's/db_name/validator-'$i'/g' ./configs/validator-$i/stellar-core.cfg
+		sed -i 's/db_name/stellar-validator-'$i'/g' ./configs/stellar-validator-$i/stellar-core.cfg
 		
 	done
 	echo "Config files updated"
@@ -178,6 +178,6 @@ function prepare_dbs(){
 
 	for (( i=0;i<${num_of_validators};i++ ))
 	do	
-		docker run --rm --network=$TESTNET_NAME -v "$WORKING_DIR/configs/validator-$i:/etc/stellar/" stellar/stellar-core:latest new-db
+		docker run --rm --network=$TESTNET_NAME -v "$WORKING_DIR/configs/stellar-validator-$i:/etc/stellar/" stellar/stellar-core:latest new-db
 	done
 }
