@@ -17,7 +17,9 @@ IMAGE_TAG=${IMAGE_TAG:-"latest"}
 VAL_NUM=${1:-3}
 
 
-source scripts/helper_functions.sh
+source $ENVFILE
+
+###
 
 ### Source scripts under scripts directory
 . $(dirname $0)/scripts/helper_functions.sh
