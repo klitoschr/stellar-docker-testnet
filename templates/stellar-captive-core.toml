@@ -1,0 +1,31 @@
+FAILURE_SAFETY=0
+UNSAFE_QUORUM=true
+
+
+[[HOME_DOMAINS]]
+HOME_DOMAIN="stellarprivnet.ac.cy"
+QUALITY="LOW"
+
+[[VALIDATORS]]
+NAME="stellar-genesis"
+HOME_DOMAIN="stellarprivnet.ac.cy"
+PUBLIC_KEY="GCL3JLOB4FHSZMMWW2AQSKO2FZ4F7DRK5US7AZBSIMKSTKGPCCXZJEIQ"
+ADDRESS="http://stellar-genesis:11626"
+HISTORY="curl -sf http://stellar-archive-publisher:80/mnt/stellar-hist/stellar-core-archive/node_001/{0} -o {1}"
+
+
+[[VALIDATORS]]
+NAME="stellar-validator-0"
+HOME_DOMAIN="stellarprivnet.ac.cy"
+PUBLIC_KEY="GDO44KKXJBPNDVAT3D2GLMN4NWAMX4W52TA6PN64TH5XHKKO6JIFVNXP"
+ADDRESS="http://stellar-genesis:11626"
+#HISTORY="curl -sf http://stellar-archive-publisher:80/mnt/stellar-hist/stellar-core-archive/node_001/{0} -o {1}"
+
+
+[[VALIDATORS]]
+NAME="stellar-validator-1"
+HOME_DOMAIN="stellarprivnet.ac.cy"
+PUBLIC_KEY="GARL7OVU7GKDGI4B5VYWAMFAFVF2ZABCDZ7CZ5UJCLCNQQDJN3VVBQWO"
+ADDRESS="http://stellar-genesis:11626"
+#HISTORY="curl -sf http://stellar-archive-publisher:80/mnt/stellar-hist/stellar-core-archive/node_001/{0} -o {1}"
+

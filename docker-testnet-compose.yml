@@ -22,6 +22,34 @@ services:
       - CAPTIVE_CORE_CONFIG_PATH=/etc/default/stellar-captive-core.toml
       - ENABLE_CAPTIVE_CORE_INGESTION=false
     volumes:
-      - ${WORKING_DIR}/templates:/etc/default
+      - /home/mtouloupos/blockchain-benchmarking-framework/networks/stellar-docker-testnet/templates:/etc/default
     networks:
       - stellar-testnet
+  stellar-validator0:
+    image: stellar/stellar-core:latest
+    container_name: stellar-validator-0
+    volumes:
+      - /home/mtouloupos/blockchain-benchmarking-framework/networks/stellar-docker-testnet/configs/stellar-validator-0:/etc/stellar/ 
+    networks:
+      - stellar-testnet
+    command: run
+    ports:
+      - 11635
+      - 11636
+    expose:
+      - 11635
+      - 11636
+  stellar-validator1:
+    image: stellar/stellar-core:latest
+    container_name: stellar-validator-1
+    volumes:
+      - /home/mtouloupos/blockchain-benchmarking-framework/networks/stellar-docker-testnet/configs/stellar-validator-1:/etc/stellar/ 
+    networks:
+      - stellar-testnet
+    command: run
+    ports:
+      - 11635
+      - 11636
+    expose:
+      - 11635
+      - 11636
