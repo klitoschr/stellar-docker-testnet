@@ -173,8 +173,8 @@ function prepare_dbs(){
 	
 	#Prepare DBs for each validator and generate genesis history archive to be served from the history publisher
 	docker run --rm --network=$TESTNET_NAME -v "$STELLAR_CONF:/etc/stellar/" stellar/stellar-core:latest new-db > ${WORKING_DIR}/root_account.txt
-	docker run --rm --network=$TESTNET_NAME -v "$STELLAR_CONF:/etc/stellar/" -v "$WORKING_DIR/deployment/history:/mnt/stellar-hist/stellar-core-archive/node_001/" stellar/stellar-core:latest new-hist local
-	docker run -d --name stellar-genesis -p 11626:11626 -p 11625:11625 --network=$TESTNET_NAME -v "$STELLAR_CONF:/etc/stellar/" -v "$WORKING_DIR/deployment/history:/mnt/stellar-hist/stellar-core-archive/node_001/" stellar/stellar-core:latest run
+	docker run --rm --network=$TESTNET_NAME -v "$STELLAR_CONF:/etc/stellar/" -v "$WORKING_DIR/deployment:/mnt/stellar-hist/stellar-core-archive/node_001/" stellar/stellar-core:latest new-hist local
+	docker run -d --name stellar-genesis -p 11626:11626 -p 11625:11625 --network=$TESTNET_NAME -v "$STELLAR_CONF:/etc/stellar/" -v "$WORKING_DIR/deployment:/mnt/stellar-hist/stellar-core-archive/node_001/" stellar/stellar-core:latest run
 
 	for (( i=0;i<${num_of_validators};i++ ))
 	do	

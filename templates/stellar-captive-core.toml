@@ -9,7 +9,7 @@ QUALITY="LOW"
 [[VALIDATORS]]
 NAME="stellar-genesis"
 HOME_DOMAIN="stellarprivnet.ac.cy"
-PUBLIC_KEY="GCL3JLOB4FHSZMMWW2AQSKO2FZ4F7DRK5US7AZBSIMKSTKGPCCXZJEIQ"
+PUBLIC_KEY="GAZGG462IQ7YGGVRZKDGKYAOD2DKJHW7VOXZYHUXHI7SAR5NDT7NOWRK"
 ADDRESS="http://stellar-genesis:11626"
 HISTORY="curl -sf http://stellar-archive-publisher:80/mnt/stellar-hist/stellar-core-archive/node_001/{0} -o {1}"
 
@@ -17,7 +17,7 @@ HISTORY="curl -sf http://stellar-archive-publisher:80/mnt/stellar-hist/stellar-c
 [[VALIDATORS]]
 NAME="stellar-validator-0"
 HOME_DOMAIN="stellarprivnet.ac.cy"
-PUBLIC_KEY="GDO44KKXJBPNDVAT3D2GLMN4NWAMX4W52TA6PN64TH5XHKKO6JIFVNXP"
+PUBLIC_KEY="GA33Z5NQBUDPIGZPDQU6ZBZIQAD3IQ5HU45ZLGESGABI5YQ7FXIHZNUT"
 ADDRESS="http://stellar-genesis:11626"
 #HISTORY="curl -sf http://stellar-archive-publisher:80/mnt/stellar-hist/stellar-core-archive/node_001/{0} -o {1}"
 
@@ -25,7 +25,7 @@ ADDRESS="http://stellar-genesis:11626"
 [[VALIDATORS]]
 NAME="stellar-validator-1"
 HOME_DOMAIN="stellarprivnet.ac.cy"
-PUBLIC_KEY="GARL7OVU7GKDGI4B5VYWAMFAFVF2ZABCDZ7CZ5UJCLCNQQDJN3VVBQWO"
+PUBLIC_KEY="GAYQJAX2GNWNPES2UJJHJK4RLIWMYCQSF6TNWXL74J572Q7Z6LPPPSQ4"
 ADDRESS="http://stellar-genesis:11626"
 #HISTORY="curl -sf http://stellar-archive-publisher:80/mnt/stellar-hist/stellar-core-archive/node_001/{0} -o {1}"
 
