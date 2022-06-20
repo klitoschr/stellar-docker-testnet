@@ -11,7 +11,7 @@ OUTPUT_DIR=${OUTPUT_DIR:-$(realpath $(dirname $0)/configs)}
 STELLAR_CONF=$(realpath $(dirname $0)/stellar-genesis/)
 VAL_NAME_PREFIX=${VAL_NAME_PREFIX:-"stellar-validator-"}
 TESTNET_NAME=${TESTNET_NAME:-"stellar_private_testnet"}
-COMPOSE_FILE=${WORKING_DIR}/$COMPOSE_FILENAME
+COMPOSE_FILE=$COMPOSE_FILENAME
 NETWORK_COMPOSE_FILE=${WORKING_DIR}/docker-testnet-compose.yml
 IMAGE_TAG=${IMAGE_TAG:-"latest"}
 VAL_NUM=${1:-3}
@@ -89,7 +89,7 @@ function start_supportive_services()
   echo "Starting supportive services..."
   TESTNET_NAME=${TESTNET_NAME} IMAGE_TAG=${IMAGE_TAG}\
     WORKING_DIR=$WORKING_DIR \
-     docker-compose -f ${COMPOSE_FILE} --env-file $ENVFILE up --build -d
+     docker-compose -f ${WORKING_DIR}/networks/stellar-docker-testnet/${COMPOSE_FILE} --env-file $ENVFILE up --build -d
    
   # Migrating horizon db
   docker run --rm -it --network benchmarking-fw-net stellar/horizon:latest db migrate up --db-url postgres://postgres:unic_iff@stellar-core-postgres/stellar_horizon_db?sslmode=disable
@@ -102,9 +102,9 @@ function start_network()
   echo "Starting Stellar network with $nvals validators..."
 
   #run testnet
-  TESTNET_NAME=${TESTNET_NAME} IMAGE_TAG=${IMAGE_TAG}\
-    WORKING_DIR=$WORKING_DIR \
-     docker-compose -f ${NETWORK_COMPOSE_FILE} --env-file $ENVFILE up --build -d
+  TESTNET_NAME=${TESTNET_NAME} IMAGE_TAG=${IMAGE_TAG} \
+    WORKING_DIR=$WORKING_DIR/networks/stellar-docker-testnet \
+     docker-compose -f $WORKING_DIR/networks/stellar-docker-testnet/docker-testnet-compose.yml --env-file $ENVFILE up --build -d
 
   echo "Waiting for all validators to run..."
 
@@ -120,12 +120,12 @@ function stop_network()
   docker container rm stellar-genesis
   
   CONFIGFILES=${OUTPUT_DIR} IMAGE_TAG=${IMAGE_TAG} \
-        WORKING_DIR=$WORKING_DIR \
-      docker-compose -f ${COMPOSE_FILE} --env-file $ENVFILE down
+        WORKING_DIR=$WORKING_DIR/networks/stellar-docker-testnet \
+      docker-compose -f $WORKING_DIR/networks/stellar-docker-testnet/docker-supportive-compose.yaml --env-file $ENVFILE down
 	  
   CONFIGFILES=${OUTPUT_DIR} IMAGE_TAG=${IMAGE_TAG} \
-        WORKING_DIR=$WORKING_DIR \
-      docker-compose -f ${NETWORK_COMPOSE_FILE} --env-file $ENVFILE down
+        WORKING_DIR=$WORKING_DIR/networks/stellar-docker-testnet \
+      docker-compose -f $WORKING_DIR/networks/stellar-docker-testnet/docker-testnet-compose.yml --env-file $ENVFILE down
   
   echo "Network stopped!"
 }
@@ -134,8 +134,8 @@ function print_status()
 {
   echo "Printing status of the  network..."
   CONFIGFILES=${OUTPUT_DIR} IMAGE_TAG=${IMAGE_TAG} TESTNET_NAME=$TESTNET_NAME \
-      WORKING_DIR=$WORKING_DIR \
-     docker-compose -f ${COMPOSE_FILE} --env-file $ENVFILE ps
+      WORKING_DIR=$WORKING_DIR/networks/stellar-docker-testnet \
+     docker-compose -f $WORKING_DIR/networks/stellar-docker-testnet/docker-supportive-compose.yaml --env-file $ENVFILE ps
   echo "  Finished!"
 }
 
