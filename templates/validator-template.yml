@@ -2,7 +2,7 @@
     image: stellar/stellar-core:latest
     container_name: ${VAL_NAME_PREFIX}${VALNUM}
     volumes:
-      - ${CONFIGFILES}/${VAL_NAME_PREFIX}${VALNUM}:/etc/stellar/ 
+      - ./configs/${VAL_NAME_PREFIX}${VALNUM}:/etc/stellar/ 
     networks:
       - stellar-testnet
     command: run

@@ -22,6 +22,6 @@ services:
       - CAPTIVE_CORE_CONFIG_PATH=/etc/default/stellar-captive-core.toml
       - ENABLE_CAPTIVE_CORE_INGESTION=false
     volumes:
-      - ${WORKING_DIR}/templates:/etc/default
+      - ./templates:/etc/default
     networks:
       - stellar-testnet
