@@ -20,7 +20,7 @@ services:
       - INGEST=true
       - STELLAR_CORE_BINARY_PATH=/usr/bin/stellar-core
       - CAPTIVE_CORE_CONFIG_PATH=/etc/default/stellar-captive-core.toml
-      - ENABLE_CAPTIVE_CORE_INGESTION=false
+      - ENABLE_CAPTIVE_CORE_INGESTION=true
     volumes:
       - ./templates:/etc/default
     networks:
